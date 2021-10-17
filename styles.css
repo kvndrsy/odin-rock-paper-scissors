@@ -1,0 +1,33 @@
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 500px;
+  gap: 25px;
+}
+
+.choices,
+.score-headings,
+.score-numerals {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.message,
+.controls {
+  display: flex;
+  justify-content: center;
+}
+
+.message {
+  height: 2em;
+}
+
+.choices button,
+.score-headings span,
+.score-numerals span {
+  flex: 1;
+  text-align: center;
+}
+

@@ -8,64 +8,56 @@ function computerPlay() {
   }
 }
 
-function playRound(playerSelection, computerSelection) {
-  // Capitalize first letter of player selection and make rest lowercase
-  playerSelection = playerSelection.slice(0, 1).toUpperCase() + playerSelection.slice(1).toLowerCase();
-
-  let validSelections = ["Rock", "Paper", "Scissors"];
-  if (!validSelections.includes(playerSelection)) {
-    console.warn(`"${playerSelection}" is not a valid selection. Replay round.`);
-    return;
-  }
+function playRound() {
+  const playerSelection = this.id;
+  const computerSelection = computerPlay();
+  let playerScore = +playerScoreSpan.textContent;
+  let computerScore = +computerScoreSpan.textContent;
 
   if (playerSelection === computerSelection) {
-    console.log(`Draw! Both parties selected ${playerSelection}. Replay round.`);
-    return 0;
+    message.textContent = `Draw! Both parties selected ${playerSelection}. Replay round.`;
   } else if (
     playerSelection === "Rock" && computerSelection === "Paper"
     || playerSelection === "Paper" && computerSelection === "Scissors"
     || playerSelection === "Scissors" && computerSelection === "Rock"
   ) {
-    console.log(`You lose the round! ${computerSelection} beats ${playerSelection}.`);
-    return -1;
+    message.textContent = `You lose the round! ${computerSelection} beats ${playerSelection}.`;
+    computerScoreSpan.textContent =  ++computerScore;
   } else {
-    console.log(`You win the round! ${playerSelection} beats ${computerSelection}.`);
-    return 1;
+    message.textContent = `You win the round! ${playerSelection} beats ${computerSelection}.`;
+    playerScoreSpan.textContent = ++playerScore;
   }
+
+  if (playerScore >= 3 || +computerScore >= 3) endGame(playerScore, computerScore);
 }
 
-function game() {
-  let playerScore = 0;
-  let computerScore = 0;
+function startGame() {
+  newGameButton.disabled = true;
+  choices.forEach(choice => choice.disabled = false);
 
-  gameLoop:
-  for (let i = 1; i <= 5; i++) {
-    console.log(`Round ${i}`);
+  playerScoreSpan.textContent = 0;
+  computerScoreSpan.textContent = 0;
+  message.textContent = "Let the game begin!"
+}
 
-    let outcome = playRound(
-      prompt("Enter Rock, Paper, or Scissors:", "Rock"),
-      computerPlay()
-    );
-
-    switch (outcome) {
-      case undefined:
-      case 0:
-        i--;
-        continue gameLoop;
-      case 1:
-        playerScore++;
-        break;
-      case -1:
-        computerScore++;
-        break;
-    }
-
-    if (playerScore >= 3 || computerScore >= 3) break gameLoop;
-  }
+function endGame(playerScore, computerScore) {
+  choices.forEach(choice => choice.disabled = true);
 
   if (playerScore > computerScore) {
-    console.log(`You win the game! ${playerScore} to ${computerScore}.`);
+    message.innerHTML += `<br>You win the game! ${playerScore} to ${computerScore}.`;
   } else {
-    console.log(`You lose the game! ${playerScore} to ${computerScore}.`);
+    message.innerHTML += `<br>You lose the game! ${playerScore} to ${computerScore}.`;
   }
+
+  newGameButton.disabled = false;
 }
+
+const newGameButton = document.querySelector("#new-game");
+newGameButton.addEventListener("click", startGame);
+
+const choices = document.querySelectorAll(".choices button");
+choices.forEach(choice => choice.addEventListener("click", playRound));
+
+const playerScoreSpan = document.querySelector("#player-score");
+const computerScoreSpan = document.querySelector("#computer-score");
+const message = document.querySelector(".message");
